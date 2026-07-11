@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nailuxe — Book Appointment</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ============ MOBILE TOPBAR ============ -->
+      <div class="topbar">
+        <div class="logo">
+          <img
+            class="logo-mark"
+            src="images/trasparent-logo for damsel.png"
+            alt="Damsel Nail Salon Logo"
+          />
+          <div class="logo-text">
+            <div class="name">Damsel</div>
+            <div class="tag">NAIL SALON</div>
+          </div>
+        </div>
+        <button
+          class="menu-btn"
+          id="menuToggle"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+          aria-controls="sidebar"
+        >
+          ☰
+        </button>
+      </div>
+
+      <!-- ============ SIDEBAR ============ -->
+      <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+        <div class="logo">
+          <img
+            class="logo-mark"
+            src="images/trasparent-logo for damsel.png"
+            alt="Damsel Nail Salon Logo"
+          />
+
+          <div class="logo-text">
+            <div class="name">Damsel</div>
+            <div class="tag">NAIL SALON</div>
+          </div>
+        </div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item active">
+              <span class="ico">📅</span>Book Appointment
+            </button>
+          </li>
+          <li>
+            <button class="nav-item">
+              <span class="ico">🗓️</span>My Appointments
+            </button>
+          </li>
+          <li>
+            <button class="nav-item">
+              <span class="ico">💇</span>Services
+            </button>
+          </li>
+          <li>
+            <button class="nav-item">
+              <span class="ico">👤</span>Nail Artists
+            </button>
+          </li>
+          <li>
+            <button class="nav-item"><span class="ico">🖼️</span>Gallery</button>
+          </li>
+          <li>
+            <button class="nav-item"><span class="ico">⭐</span>Reviews</button>
+          </li>
+          <li>
+            <button class="nav-item"><span class="ico">🙍</span>Profile</button>
+          </li>
+          <li>
+            <button class="nav-item">
+              <span class="ico">⚙️</span>Settings
+            </button>
+          </li>
+        </ul>
+        <div class="promo-card">
+          <h4>New Client?</h4>
+          <p>Get 10% off your first booking!</p>
+          <button class="btn-claim">Claim Offer</button>
+        </div>
+      </nav>
+
+      <!-- ============ MAIN COLUMN ============ -->
+      <div class="main-col">
+        <div class="page-header">
+          <h1 id="pageTitle">Book Appointment</h1>
+          <div class="header-actions">
+            <button class="icon-btn" aria-label="Notifications">
+              🔔<span class="dot"></span>
+            </button>
+            <div class="user-chip">
+              <div class="avatar" aria-hidden="true">DN</div>
+              <span>Dammy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ STEPPER ============ -->
+        <div
+          class="stepper"
+          id="stepper"
+          role="list"
+          aria-label="Booking progress"
+        >
+          <div class="step active" data-step="1" role="listitem">
+            <div class="step-num">1</div>
+            <div class="step-label">Choose Service</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step" data-step="2" role="listitem">
+            <div class="step-num">2</div>
+            <div class="step-label">Select Time</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step" data-step="3" role="listitem">
+            <div class="step-num">3</div>
+            <div class="step-label">Your Details</div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: BOOKING FLOW ============ -->
+        <div class="view visible" id="bookingView">
+          <div class="booking-layout">
+            <div class="booking-panel">
+              <!-- ---- STEP 1: choose service ---- -->
+              <section
+                class="step-panel visible"
+                id="step1"
+                aria-labelledby="step1Heading"
+              >
+                <h2 class="panel-heading" id="step1Heading">
+                  Choose a Service
+                </h2>
+                <div class="service-grid" id="serviceGrid" role="list"></div>
+                <div class="panel-actions">
+                  <button class="btn btn-primary" id="toStep2" disabled>
+                    Continue
+                  </button>
+                </div>
+              </section>
+
+              <!-- ---- STEP 2: date & time ---- -->
+              <section
+                class="step-panel"
+                id="step2"
+                aria-labelledby="step2Heading"
+              >
+                <h2 class="panel-heading" id="step2Heading">
+                  Select Date &amp; Time
+                </h2>
+                <div class="datetime-layout">
+                  <div class="calendar-block">
+                    <div class="cal-header">
+                      <button id="prevMonth" aria-label="Previous month">
+                        ‹
+                      </button>
+                      <div class="cal-title" id="calTitle"></div>
+                      <button id="nextMonth" aria-label="Next month">›</button>
+                    </div>
+                    <div class="cal-grid" id="calGrid"></div>
+                  </div>
+                  <div class="times-block">
+                    <h3>Available Times</h3>
+                    <div class="time-grid" id="timeGrid"></div>
+                  </div>
+                </div>
+                <div class="panel-actions">
+                  <button class="btn btn-primary" id="toStep3" disabled>
+                    Continue
+                  </button>
+                  <button class="btn btn-outline" id="backTo1">Back</button>
+                </div>
+              </section>
+
+              <!-- ---- STEP 3: your details ---- -->
+              <section
+                class="step-panel"
+                id="step3"
+                aria-labelledby="step3Heading"
+              >
+                <h2 class="panel-heading" id="step3Heading">Your Details</h2>
+                <form class="form-grid" id="detailsForm" novalidate>
+                  <div class="field" id="fieldName">
+                    <label for="fullName">Full Name</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      autocomplete="name"
+                      required
+                    />
+                    <div class="error-msg">Please enter your full name.</div>
+                  </div>
+                  <div class="field" id="fieldPhone">
+                    <label for="phone">Phone Number</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      autocomplete="tel"
+                      placeholder="+234 801 234 5678"
+                      required
+                    />
+                    <div class="error-msg">
+                      Please enter a valid phone number.
+                    </div>
+                  </div>
+                  <div class="field" id="fieldEmail">
+                    <label for="email">Email Address</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      autocomplete="email"
+                      required
+                    />
+                    <div class="error-msg">
+                      Please enter a valid email address.
+                    </div>
+                  </div>
+                  <div class="field" id="fieldNotes">
+                    <label for="notes">Special Requests (Optional)</label>
+                    <textarea
+                      id="notes"
+                      name="notes"
+                      placeholder="E.g. I have a nail allergy, preferred nail shape, etc."
+                    ></textarea>
+                  </div>
+                </form>
+                <div class="panel-actions">
+                  <button class="btn btn-primary" id="toConfirm">
+                    Confirm Booking
+                  </button>
+                  <button class="btn btn-outline" id="backTo2">Back</button>
+                </div>
+              </section>
+
+              <!-- ---- AI STYLE ADVISOR PLACEHOLDER ---- -->
+              <div class="ai-advisor">
+                <span class="ai-tag"> AI Style Advisor</span>
+                <h3>Not sure which style suits you?</h3>
+
+                <form id="aiForm">
+                  <input
+                    type="text"
+                    required
+                    autofocus
+                    class="ai-slot"
+                    autocomplete="off"
+                    placeholder=" Ask your questions here..
+                  "
+                  />
+                  <button type="submit" class="btn btn-secondary" id="aiSubmit">
+                    Suggestions
+                  </button>
+                </form>
+                <div id="suggestion"></div>
+              </div>
+            </div>
+
+            <!-- ============ SUMMARY PANEL ============ -->
+            <aside class="summary-panel" aria-label="Booking summary">
+              <h3>Your Booking</h3>
+              <div class="summary-service" id="summaryService">
+                <div class="summary-thumb" id="summaryThumb">
+                  <img id="summaryImg" src="" alt="thumbnail" />
+                  thumbnail<br />
+                  selected
+                </div>
+                <div>
+                  <div class="s-name" id="summaryName">—</div>
+                  <div class="s-price" id="summaryPrice"></div>
+                  <div class="s-dur" id="summaryDur"></div>
+                </div>
+              </div>
+              <div class="summary-rows">
+                <div class="s-row">
+                  <span class="label">👤 Nail Artist</span
+                  ><span class="value muted">Any Available</span>
+                </div>
+                <div class="s-row">
+                  <span class="label">📅 Date</span
+                  ><span class="value muted" id="summaryDate"
+                    >Not selected</span
+                  >
+                </div>
+                <div class="s-row">
+                  <span class="label">🕐 Time</span
+                  ><span class="value muted" id="summaryTime"
+                    >Not selected</span
+                  >
+                </div>
+              </div>
+              <div class="summary-total">
+                <span class="t-label">Total</span>
+                <span class="t-val" id="summaryTotal">$0</span>
+              </div>
+              <div class="summary-actions">
+                <button class="btn btn-primary" id="summaryContinue">
+                  Continue
+                </button>
+                <button class="btn btn-outline" id="summaryBack" disabled>
+                  Back
+                </button>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: CONFIRMATION ============ -->
+        <div class="view" id="confirmView">
+          <div class="booking-panel">
+            <div class="confirm-wrap">
+              <div class="confirm-check" aria-hidden="true">✓</div>
+              <h2>Booking Confirmed! 🎉</h2>
+              <p>
+                Your appointment has been booked. We look forward to pampering
+                you!
+              </p>
+              <div class="confirm-card">
+                <div
+                  class="summary-thumb"
+                  id="confirmThumb"
+                  style="width: 60px; height: 60px"
+                ></div>
+                <div>
+                  <div class="s-name" id="confirmName"></div>
+                  <div class="confirm-detail">
+                    📅 <span id="confirmDate"></span>
+                  </div>
+                  <div class="confirm-detail">
+                    🕐 <span id="confirmTime"></span>
+                  </div>
+                  <div class="confirm-detail">👤 Any Available</div>
+                </div>
+              </div>
+              <div
+                class="panel-actions"
+                style="margin: 0 auto; max-width: 320px"
+              >
+                <button class="btn btn-primary" id="viewAppointments">
+                  View My Appointments
+                </button>
+                <button class="btn btn-outline" id="backHome">
+                  Back to Home
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
