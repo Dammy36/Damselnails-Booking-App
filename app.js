@@ -455,13 +455,16 @@
     suggestionElement.textContent = "Thinking...";
 
     try {
-      const response = await fetch("http://localhost:3000/api/style-advice", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://damselnails-booking-app.onrender.com",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: userInput }),
         },
-        body: JSON.stringify({ prompt: userInput }),
-      });
+      );
 
       const data = await response.json();
 
