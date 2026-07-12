@@ -456,7 +456,7 @@
 
     try {
       const response = await fetch(
-        "https://damselnails-booking-app.onrender.com",
+        "https://damselnails-booking-app.onrender.com/api/style-advice",
         {
           method: "POST",
           headers: {
