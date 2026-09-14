@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nailuxe — Book Appointment</title>
+    <title>Damsel Nails — Book Appointment</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -24,7 +24,7 @@
             alt="Damsel Nail Salon Logo"
           />
           <div class="logo-text">
-            <div class="name">Damsel</div>
+            <div class="name">Damsel Nails</div>
             <div class="tag">NAIL SALON</div>
           </div>
         </div>
@@ -49,42 +49,48 @@
           />
 
           <div class="logo-text">
-            <div class="name">Damsel</div>
+            <div class="name">Damsel Nails</div>
             <div class="tag">NAIL SALON</div>
           </div>
         </div>
         <ul class="nav-list">
           <li>
-            <button class="nav-item active">
+            <button class="nav-item active" data-view="booking">
               <span class="ico">📅</span>Book Appointment
             </button>
           </li>
           <li>
-            <button class="nav-item">
+            <button class="nav-item" data-view="appointments">
               <span class="ico">🗓️</span>My Appointments
             </button>
           </li>
           <li>
-            <button class="nav-item">
+            <button class="nav-item" data-view="services">
               <span class="ico">💇</span>Services
             </button>
           </li>
           <li>
-            <button class="nav-item">
+            <button class="nav-item" data-view="artists">
               <span class="ico">👤</span>Nail Artists
             </button>
           </li>
           <li>
-            <button class="nav-item"><span class="ico">🖼️</span>Gallery</button>
+            <button class="nav-item" data-view="gallery">
+              <span class="ico">🖼️</span>Gallery
+            </button>
           </li>
           <li>
-            <button class="nav-item"><span class="ico">⭐</span>Reviews</button>
+            <button class="nav-item" data-view="reviews">
+              <span class="ico">⭐</span>Reviews
+            </button>
           </li>
           <li>
-            <button class="nav-item"><span class="ico">🙍</span>Profile</button>
+            <button class="nav-item" data-view="profile">
+              <span class="ico">🙍</span>Profile
+            </button>
           </li>
           <li>
-            <button class="nav-item">
+            <button class="nav-item" data-view="settings">
               <span class="ico">⚙️</span>Settings
             </button>
           </li>
@@ -92,7 +98,7 @@
         <div class="promo-card">
           <h4>New Client?</h4>
           <p>Get 10% off your first booking!</p>
-          <button class="btn-claim">Claim Offer</button>
+          <button class="btn-claim" id="claimOfferBtn">Claim Offer</button>
         </div>
       </nav>
 
@@ -101,9 +107,20 @@
         <div class="page-header">
           <h1 id="pageTitle">Book Appointment</h1>
           <div class="header-actions">
-            <button class="icon-btn" aria-label="Notifications">
-              🔔<span class="dot"></span>
-            </button>
+            <div class="notif-wrap">
+              <button
+                class="icon-btn"
+                id="notifBtn"
+                aria-label="Notifications"
+                aria-expanded="false"
+              >
+                🔔<span class="dot" id="notifDot"></span>
+              </button>
+              <div class="notif-dropdown" id="notifDropdown" hidden>
+                <div class="notif-head">Notifications</div>
+                <div id="notifList"></div>
+              </div>
+            </div>
             <div class="user-chip">
               <div class="avatar" aria-hidden="true">DN</div>
               <span>Dammy</span>
@@ -125,7 +142,7 @@
           <div class="step-line"></div>
           <div class="step" data-step="2" role="listitem">
             <div class="step-num">2</div>
-            <div class="step-label">Select Time</div>
+            <div class="step-label">Date &amp; Time</div>
           </div>
           <div class="step-line"></div>
           <div class="step" data-step="3" role="listitem">
@@ -234,6 +251,12 @@
                       Please enter a valid email address.
                     </div>
                   </div>
+                  <div class="field" id="fieldArtist">
+                    <label for="artistSelect">Preferred Nail Artist</label>
+                    <select id="artistSelect" name="artist">
+                      <option value="">Any Available</option>
+                    </select>
+                  </div>
                   <div class="field" id="fieldNotes">
                     <label for="notes">Special Requests (Optional)</label>
                     <textarea
@@ -251,23 +274,25 @@
                 </div>
               </section>
 
-              <!-- ---- AI STYLE ADVISOR PLACEHOLDER ---- -->
+              <!-- ---- AI STYLE ADVISOR ---- -->
               <div class="ai-advisor">
-                <span class="ai-tag"> AI Style Advisor</span>
+                <span class="ai-tag">AI Style Advisor</span>
                 <h3>Not sure which style suits you?</h3>
+                <p class="ai-note">
+                  Describe your event, outfit or mood and our AI advisor will
+                  suggest a color and a simple nail art idea.
+                </p>
 
                 <form id="aiForm">
                   <input
                     type="text"
                     required
-                    autofocus
                     class="ai-slot"
                     autocomplete="off"
-                    placeholder=" Ask your questions here..
-                  "
+                    placeholder="e.g. Going to a summer wedding, want something elegant"
                   />
                   <button type="submit" class="btn btn-secondary" id="aiSubmit">
-                    Suggestions
+                    Suggest
                   </button>
                 </form>
                 <div id="suggestion"></div>
@@ -278,11 +303,7 @@
             <aside class="summary-panel" aria-label="Booking summary">
               <h3>Your Booking</h3>
               <div class="summary-service" id="summaryService">
-                <div class="summary-thumb" id="summaryThumb">
-                  <img id="summaryImg" src="" alt="thumbnail" />
-                  thumbnail<br />
-                  selected
-                </div>
+                <div class="summary-thumb" id="summaryThumb"></div>
                 <div>
                   <div class="s-name" id="summaryName">—</div>
                   <div class="s-price" id="summaryPrice"></div>
@@ -292,7 +313,7 @@
               <div class="summary-rows">
                 <div class="s-row">
                   <span class="label">👤 Nail Artist</span
-                  ><span class="value muted">Any Available</span>
+                  ><span class="value muted" id="summaryArtist">Any Available</span>
                 </div>
                 <div class="s-row">
                   <span class="label">📅 Date</span
@@ -305,6 +326,10 @@
                   ><span class="value muted" id="summaryTime"
                     >Not selected</span
                   >
+                </div>
+                <div class="s-row discount" id="summaryDiscountRow" hidden>
+                  <span class="label">🏷️ New client discount</span
+                  ><span class="value">-10%</span>
                 </div>
               </div>
               <div class="summary-total">
@@ -347,7 +372,7 @@
                   <div class="confirm-detail">
                     🕐 <span id="confirmTime"></span>
                   </div>
-                  <div class="confirm-detail">👤 Any Available</div>
+                  <div class="confirm-detail">👤 <span id="confirmArtist">Any Available</span></div>
                 </div>
               </div>
               <div
@@ -364,7 +389,160 @@
             </div>
           </div>
         </div>
+
+        <!-- ============ VIEW: MY APPOINTMENTS ============ -->
+        <div class="view" id="appointmentsView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>My Appointments</h2>
+              <p>Everything you've booked with Damsel Nails, in one place.</p>
+            </div>
+            <div id="appointmentsList"></div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: SERVICES CATALOG ============ -->
+        <div class="view" id="servicesView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>Our Services</h2>
+              <p>Hand-finished manicures, acrylics and spa treatments.</p>
+            </div>
+            <div class="catalog-grid" id="servicesCatalog"></div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: NAIL ARTISTS ============ -->
+        <div class="view" id="artistsView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>Nail Artists</h2>
+              <p>The hands behind every Damsel Nails appointment.</p>
+            </div>
+            <div class="artist-grid" id="artistsGrid"></div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: GALLERY ============ -->
+        <div class="view" id="galleryView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>Gallery</h2>
+              <p>Recent work from the studio floor.</p>
+            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: REVIEWS ============ -->
+        <div class="view" id="reviewsView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>Reviews</h2>
+              <p>A few words from clients (sample testimonials).</p>
+            </div>
+            <div class="review-list" id="reviewsList"></div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: PROFILE ============ -->
+        <div class="view" id="profileView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>Profile</h2>
+              <p>Save your details once to speed up future bookings.</p>
+            </div>
+            <div class="profile-layout">
+              <form class="form-grid profile-card" id="profileForm" novalidate>
+                <div class="field">
+                  <label for="profileName">Full Name</label>
+                  <input type="text" id="profileName" autocomplete="name" />
+                </div>
+                <div class="field">
+                  <label for="profilePhone">Phone Number</label>
+                  <input type="tel" id="profilePhone" autocomplete="tel" />
+                </div>
+                <div class="field">
+                  <label for="profileEmail">Email Address</label>
+                  <input type="email" id="profileEmail" autocomplete="email" />
+                </div>
+                <div class="panel-actions" style="margin-top: 4px">
+                  <button type="submit" class="btn btn-primary">
+                    Save Profile
+                  </button>
+                </div>
+                <div class="save-note" id="profileSaveNote">
+                  Saved — these details will prefill your next booking.
+                </div>
+              </form>
+              <div class="profile-stats">
+                <div class="stat-box">
+                  <div class="stat-num" id="statTotalBookings">0</div>
+                  <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-num" id="statUpcoming">0</div>
+                  <div class="stat-label">Upcoming</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ VIEW: SETTINGS ============ -->
+        <div class="view" id="settingsView">
+          <div class="subview-panel">
+            <div class="subview-head">
+              <h2>Settings</h2>
+              <p>Manage reminders and your locally saved data.</p>
+            </div>
+            <div class="settings-list">
+              <div class="settings-row">
+                <div>
+                  <div class="s-title">Email reminders</div>
+                  <div class="s-desc">
+                    Get an email reminder before your appointment.
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="settingEmail" />
+                  <span class="track"></span>
+                </label>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="s-title">SMS reminders</div>
+                  <div class="s-desc">
+                    Get a text reminder the day before your appointment.
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="settingSms" />
+                  <span class="track"></span>
+                </label>
+              </div>
+            </div>
+            <div class="danger-zone">
+              <div class="s-title">Clear saved data</div>
+              <div class="s-desc">
+                Removes your appointments, profile and preferences stored on
+                this device. This cannot be undone.
+              </div>
+              <button class="btn btn-outline btn-small" id="clearDataBtn">
+                Clear My Data
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- ============ GALLERY LIGHTBOX ============ -->
+    <div class="lightbox" id="lightbox" hidden>
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close">
+        ✕
+      </button>
+      <img id="lightboxImg" src="" alt="" />
     </div>
 
     <script src="app.js"></script>
