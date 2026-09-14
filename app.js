@@ -152,6 +152,8 @@
   const N8N_BOOKING_WEBHOOK_URL =
     "https://damselnails-booking-app.onrender.com/api/notify-booking";
 
+  const CHAT_URL = "https://damselnails-booking-app.onrender.com/api/chat";
+
   const VIEW_TITLES = {
     booking: "Book Appointment",
     confirm: "Booking Confirmed",
@@ -1055,6 +1057,76 @@
   }
 
   $("#aiForm").addEventListener("submit", aiSummary);
+
+  /* =========================================================
+     CHAT WIDGET
+  ========================================================= */
+  const chatHistory = [];
+
+  function appendChatBubble(text, role) {
+    const list = $("#chatMessages");
+    const bubble = document.createElement("div");
+    bubble.className = `chat-msg chat-msg-${role}`;
+    bubble.textContent = text;
+    list.appendChild(bubble);
+    list.scrollTop = list.scrollHeight;
+    return bubble;
+  }
+
+  const chatToggle = $("#chatToggle");
+  const chatPanel = $("#chatPanel");
+  const chatInput = $("#chatInput");
+  const chatSend = $("#chatSend");
+
+  chatToggle.addEventListener("click", () => {
+    const willOpen = chatPanel.hidden;
+    chatPanel.hidden = !willOpen;
+    chatToggle.setAttribute("aria-expanded", String(willOpen));
+    if (willOpen) chatInput.focus();
+  });
+  $("#chatClose").addEventListener("click", () => {
+    chatPanel.hidden = true;
+    chatToggle.setAttribute("aria-expanded", "false");
+  });
+
+  $("#chatForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = chatInput.value.trim();
+    if (!question) return;
+
+    appendChatBubble(question, "user");
+    chatHistory.push({ role: "user", content: question });
+    chatInput.value = "";
+    chatInput.disabled = true;
+    chatSend.disabled = true;
+
+    const thinkingBubble = appendChatBubble("Thinking…", "bot");
+
+    try {
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: chatHistory }),
+      });
+      if (!response.ok) throw new Error(`Request failed (${response.status})`);
+      const data = await response.json();
+      if (!data.reply) throw new Error("No reply returned");
+
+      thinkingBubble.textContent = data.reply;
+      chatHistory.push({ role: "assistant", content: data.reply });
+    } catch (error) {
+      thinkingBubble.classList.remove("chat-msg-bot");
+      thinkingBubble.classList.add("chat-msg-error");
+      thinkingBubble.textContent =
+        "Sorry, I couldn't get an answer right now. Please try again in a moment.";
+      chatHistory.pop();
+      console.error(error);
+    } finally {
+      chatInput.disabled = false;
+      chatSend.disabled = false;
+      chatInput.focus();
+    }
+  });
 
   /* =========================================================
      INIT
