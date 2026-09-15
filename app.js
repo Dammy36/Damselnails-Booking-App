@@ -195,6 +195,45 @@
     "images/spa-image.jpg",
   ];
 
+  // Live gallery photos come from this public Supabase Storage bucket —
+  // drop a new image into the "gallery" bucket in the Supabase dashboard
+  // and it appears on the site automatically, no code change needed.
+  // Falls back to GALLERY_IMAGES above if Supabase is unreachable or empty.
+  const SUPABASE_URL = "https://wjdvoxmbxxjenrxdgtqs.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_6HSqskUgiSlxsYBw7XfJRQ_2E-mcs1M";
+  const SUPABASE_GALLERY_BUCKET = "gallery";
+
+  async function fetchSupabaseGalleryImages() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/list/${SUPABASE_GALLERY_BUCKET}`,
+        {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            limit: 100,
+            sortBy: { column: "name", order: "desc" },
+          }),
+        },
+      );
+      if (!res.ok) throw new Error(`Supabase list failed (${res.status})`);
+      const files = await res.json();
+      return files
+        .filter((f) => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name))
+        .map(
+          (f) =>
+            `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_GALLERY_BUCKET}/${f.name}`,
+        );
+    } catch (err) {
+      console.error("Failed to load gallery from Supabase", err);
+      return null;
+    }
+  }
+
   const TIMES = [
     "9:00 AM",
     "10:00 AM",
@@ -849,18 +888,26 @@
   /* =========================================================
      GALLERY
   ========================================================= */
-  function renderGallery() {
+  function renderGalleryGrid(images) {
     const grid = $("#galleryGrid");
-    grid.innerHTML = GALLERY_IMAGES.map(
-      (src, i) => `
+    grid.innerHTML = images
+      .map(
+        (src, i) => `
       <button type="button" class="gallery-item" data-src="${src}">
         <img src="${src}" alt="Nail art example ${i + 1}" loading="lazy">
       </button>`,
-    ).join("");
+      )
+      .join("");
 
     $$(".gallery-item", grid).forEach((btn) => {
       btn.addEventListener("click", () => openLightbox(btn.dataset.src));
     });
+  }
+
+  async function renderGallery() {
+    renderGalleryGrid(GALLERY_IMAGES);
+    const liveImages = await fetchSupabaseGalleryImages();
+    if (liveImages && liveImages.length) renderGalleryGrid(liveImages);
   }
 
   function openLightbox(src) {
