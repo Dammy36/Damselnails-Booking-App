@@ -227,7 +227,7 @@
         .filter((f) => f.name && /\.(jpe?g|png|webp|gif)$/i.test(f.name))
         .map(
           (f) =>
-            `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_GALLERY_BUCKET}/${f.name}`,
+            `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_GALLERY_BUCKET}/${encodeURIComponent(f.name)}`,
         );
     } catch (err) {
       console.error("Failed to load gallery from Supabase", err);
