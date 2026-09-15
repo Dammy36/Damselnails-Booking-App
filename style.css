@@ -1228,8 +1228,8 @@ textarea:focus-visible,
 }
 .catalog-body .row {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 3px;
 }
 .catalog-body .row .name {
   font-weight: 700;

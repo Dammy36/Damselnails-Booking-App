@@ -4,61 +4,125 @@
   /* =========================================================
      DATA — services
   ========================================================= */
+  // Prices marked "placeholder" were not in the salon's price list yet and
+  // default to a flat ₦20,000+ starting point — update once real pricing
+  // is confirmed.
   const SERVICES = [
     {
-      id: "classic",
-      name: "Classic Manicure",
-      price: 25,
-      duration: 45,
-      image: "images/classic-manicure.jpg",
-      description:
-        "A tidy, no-fuss shape-and-polish finish for hands that need to look put together fast.",
-    },
-    {
-      id: "gel",
-      name: "Gel Manicure",
-      price: 35,
-      duration: 60,
-      image: "images/gel-manicure.jpg",
-      description:
-        "Long-wearing, high-shine gel color that resists chips for weeks.",
-    },
-    {
-      id: "acrylic",
+      id: "acrylic-full-set",
       name: "Acrylic Full Set",
-      price: 50,
+      price: 22000,
+      priceSuffix: "+",
       duration: 90,
       image: "images/acrylic.jpg",
       description:
-        "A full sculpted set for length and strength, ready for any design.",
+        "A full sculpted acrylic set. Price varies by length: ₦22k short, ₦28k medium, ₦38k med-long, ₦45k long, ₦50k-70k XL/XXL.",
     },
     {
-      id: "artdesign",
-      name: "Nail Art Design",
-      price: 15,
-      duration: 30,
-      image: "images/nail-art.jpg",
+      id: "acrylic-refill",
+      name: "Acrylic Refill",
+      price: 15000,
       priceSuffix: "+",
+      duration: 60,
+      image: "images/acrylic.jpg",
       description:
-        "Hand-painted detail added to any manicure — from minimal lines to statement art.",
+        "Refill for acrylic nails 2-3 weeks old. Price varies by length, from ₦15k short up to ₦40k XL/XXL.",
+    },
+    {
+      id: "gel-polish",
+      name: "Gel Polish",
+      price: 20000,
+      duration: 45,
+      image: "images/gel-manicure.jpg",
+      description: "Long-wearing, high-shine gel polish. (placeholder price)",
+    },
+    {
+      id: "gel-x",
+      name: "Gel X",
+      price: 25000,
+      duration: 60,
+      image: "images/gel-manicure.jpg",
+      description:
+        "Gel extension system for length without acrylic. (placeholder price)",
+    },
+    {
+      id: "biab",
+      name: "Builder Gel (BIAB)",
+      price: 10000,
+      priceSuffix: "+",
+      duration: 60,
+      image: "images/gel-manicure.jpg",
+      description:
+        "Builder-in-a-bottle strengthening overlay. ₦10k polish, ₦15k nail extension. +₦5k for cat-eye effect.",
     },
     {
       id: "pedicure",
       name: "Pedicure",
-      price: 40,
+      price: 20000,
+      priceSuffix: "+",
       duration: 60,
       image: "images/pedicure.jpg",
       description:
-        "A relaxing soak, exfoliation and polish to keep feet just as polished as your hands.",
+        "Acrylic toe nails, from ₦20k. Refill ₦10k for toes 2-3 weeks old.",
     },
     {
-      id: "spa",
-      name: "Damsel Spa Package",
-      price: 70,
-      duration: 120,
-      image: "images/spa-image.jpg",
+      id: "manicure",
+      name: "Manicure",
+      price: 20000,
+      duration: 45,
+      image: "images/classic-manicure.jpg",
       description:
-        "Our signature top-to-toe treatment — manicure, pedicure and a hand-and-foot massage.",
+        "A tidy shape-and-polish finish for hands that need to look put together fast. (placeholder price)",
+    },
+    {
+      id: "nail-repair",
+      name: "Nail Repair",
+      price: 20000,
+      duration: 30,
+      image: "images/classic-manicure.jpg",
+      description: "Fix a broken or lifted nail. (placeholder price)",
+    },
+    {
+      id: "nail-removal",
+      name: "Nail Removal",
+      price: 5000,
+      priceSuffix: "+",
+      duration: 20,
+      image: "images/classic-manicure.jpg",
+      description:
+        "₦5k for nails done in-studio, ₦7k for nails done elsewhere.",
+    },
+    {
+      id: "french-tips",
+      name: "French Tips",
+      price: 20000,
+      duration: 45,
+      image: "images/nail-art.jpg",
+      description: "Classic french tip finish. (placeholder price)",
+    },
+    {
+      id: "chrome",
+      name: "Chrome",
+      price: 20000,
+      duration: 45,
+      image: "images/nail-art.jpg",
+      description: "Mirror-shine chrome finish. (placeholder price)",
+    },
+    {
+      id: "3d-nail-art",
+      name: "3D Nail Art",
+      price: 25000,
+      duration: 45,
+      image: "images/nail-art.jpg",
+      description: "Sculpted, dimensional nail art detail. (placeholder price)",
+    },
+    {
+      id: "character-art",
+      name: "Character Art",
+      price: 30000,
+      duration: 60,
+      image: "images/nail-art.jpg",
+      description: "Custom hand-painted character design. (placeholder price)",
     },
   ];
 
@@ -241,11 +305,11 @@
   }
 
   function money(n) {
-    return `$${Number.isInteger(n) ? n : n.toFixed(2)}`;
+    return `₦${Math.round(n).toLocaleString("en-NG")}`;
   }
 
   function discountedPrice(price) {
-    return offerClaimed ? Math.round(price * 0.9 * 100) / 100 : price;
+    return offerClaimed ? Math.round(price * 0.9) : price;
   }
 
   function uid() {
@@ -400,7 +464,7 @@
       $("#summaryName").textContent = "—";
       $("#summaryPrice").textContent = "";
       $("#summaryDur").textContent = "";
-      $("#summaryTotal").textContent = "$0";
+      $("#summaryTotal").textContent = "₦0";
       $("#summaryDiscountRow").hidden = true;
     }
     $("#summaryArtist").textContent = state.form.artist || "Any Available";
