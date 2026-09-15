@@ -216,6 +216,7 @@
           },
           body: JSON.stringify({
             limit: 100,
+            prefix: "",
             sortBy: { column: "name", order: "desc" },
           }),
         },
