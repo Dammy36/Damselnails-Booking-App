@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Damsel Nails — Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="admin-app">
+      <!-- ============ LOGIN ============ -->
+      <div class="admin-login" id="adminLogin">
+        <div class="admin-login-card">
+          <div class="logo">
+            <img
+              class="logo-mark"
+              src="images/trasparent-logo for damsel.png"
+              alt="Damsel Nails Logo"
+            />
+            <div class="logo-text">
+              <div class="name">Damsel Nails</div>
+              <div class="tag">ADMIN</div>
+            </div>
+          </div>
+          <h1>Admin Login</h1>
+          <form id="loginForm">
+            <div class="field">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" autocomplete="username" required />
+            </div>
+            <div class="field">
+              <label for="loginPassword">Password</label>
+              <input
+                type="password"
+                id="loginPassword"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <div class="error-msg" id="loginError" hidden></div>
+            <button class="btn btn-primary" type="submit" id="loginSubmit">
+              Log In
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ============ DASHBOARD ============ -->
+      <div class="admin-dashboard" id="adminDashboard" hidden>
+        <header class="admin-header">
+          <div class="logo">
+            <img
+              class="logo-mark"
+              src="images/trasparent-logo for damsel.png"
+              alt="Damsel Nails Logo"
+            />
+            <div class="logo-text">
+              <div class="name">Damsel Nails</div>
+              <div class="tag">ADMIN</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 14px">
+            <a href="index.html" class="btn btn-ghost btn-small" style="text-decoration:none">View Site</a>
+            <button class="btn btn-outline btn-small" id="logoutBtn">Log Out</button>
+          </div>
+        </header>
+
+        <nav class="admin-tabs">
+          <button class="admin-tab active" data-tab="services">Services</button>
+          <button class="admin-tab" data-tab="artists">Nail Artists</button>
+          <button class="admin-tab" data-tab="reviews">Reviews</button>
+        </nav>
+
+        <div class="admin-content">
+          <section class="admin-panel visible" id="tab-services">
+            <div class="admin-panel-head">
+              <h2>Services</h2>
+              <button class="btn btn-primary btn-small" id="newServiceBtn">
+                + New Service
+              </button>
+            </div>
+            <div class="admin-list" id="servicesList"></div>
+          </section>
+
+          <section class="admin-panel" id="tab-artists">
+            <div class="admin-panel-head">
+              <h2>Nail Artists</h2>
+              <button class="btn btn-primary btn-small" id="newArtistBtn">
+                + New Artist
+              </button>
+            </div>
+            <div class="admin-list" id="artistsList"></div>
+          </section>
+
+          <section class="admin-panel" id="tab-reviews">
+            <div class="admin-panel-head">
+              <h2>Reviews</h2>
+              <button class="btn btn-primary btn-small" id="newReviewBtn">
+                + New Review
+              </button>
+            </div>
+            <div class="admin-list" id="reviewsList"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SHARED EDIT MODAL ============ -->
+    <div class="admin-modal" id="adminModal" hidden>
+      <div class="admin-modal-card">
+        <h3 id="modalTitle">Edit</h3>
+        <form id="modalForm"></form>
+        <div class="admin-save-note" id="modalNote"></div>
+        <div class="admin-modal-actions">
+          <button type="button" class="btn btn-outline" id="modalCancel">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-outline" id="modalDelete" style="display:none">
+            Delete
+          </button>
+          <button type="submit" form="modalForm" class="btn btn-primary" id="modalSave">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

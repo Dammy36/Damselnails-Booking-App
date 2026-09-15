@@ -235,6 +235,77 @@
     }
   }
 
+  // Services/artists/reviews render from the hardcoded arrays above
+  // immediately (so the page is never empty), then this quietly swaps in
+  // live data from Supabase if it's reachable — same fallback pattern as
+  // the gallery. Editing content in admin.html updates these tables.
+  async function fetchSupabaseTable(table, order) {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/${table}?select=*&order=${order}`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } },
+      );
+      if (!res.ok) throw new Error(`Supabase ${table} fetch failed (${res.status})`);
+      return await res.json();
+    } catch (err) {
+      console.error(`Failed to load ${table} from Supabase`, err);
+      return null;
+    }
+  }
+
+  async function refreshLiveContent() {
+    const [svcRows, artRows, revRows] = await Promise.all([
+      fetchSupabaseTable("services", "sort_order.asc"),
+      fetchSupabaseTable("artists", "sort_order.asc"),
+      fetchSupabaseTable("reviews", "sort_order.asc"),
+    ]);
+
+    if (svcRows && svcRows.length) {
+      SERVICES.length = 0;
+      svcRows.forEach((r) =>
+        SERVICES.push({
+          id: r.id,
+          name: r.name,
+          price: r.price,
+          priceSuffix: r.price_suffix || undefined,
+          duration: r.duration,
+          image: r.image,
+          description: r.description || "",
+        }),
+      );
+      renderServiceGrid();
+      renderSummary();
+      if ($("#servicesCatalog")) renderServicesCatalog();
+    }
+
+    if (artRows && artRows.length) {
+      ARTISTS.length = 0;
+      artRows.forEach((r) =>
+        ARTISTS.push({
+          initials: r.initials,
+          name: r.name,
+          role: r.role,
+          bio: r.bio || "",
+        }),
+      );
+      populateArtistSelect();
+      if ($("#artistsGrid")) renderArtists();
+    }
+
+    if (revRows && revRows.length) {
+      REVIEWS.length = 0;
+      revRows.forEach((r) =>
+        REVIEWS.push({
+          name: r.name,
+          rating: r.rating,
+          quote: r.quote,
+          service: r.service || "",
+        }),
+      );
+      if ($("#reviewsList")) renderReviews();
+    }
+  }
+
   const TIMES = [
     "9:00 AM",
     "10:00 AM",
@@ -563,6 +634,9 @@
 
   function populateArtistSelect() {
     const select = $("#artistSelect");
+    $$("option", select).forEach((opt) => {
+      if (opt.value) opt.remove();
+    });
     ARTISTS.forEach((a) => {
       const opt = document.createElement("option");
       opt.value = a.name;
@@ -1250,6 +1324,7 @@
   renderTimeGrid();
   renderSummary();
   renderNotifications();
+  refreshLiveContent();
   switchView("booking");
   goToStep(1);
 })();
