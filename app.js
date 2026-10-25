@@ -4,17 +4,28 @@
   /* =========================================================
      DATA — services
   ========================================================= */
-  // These services remain bookable while their prices are confirmed by the salon.
-  const UNPRICED_SERVICE_IDS = new Set([
-    "gel-polish",
-    "gel-x",
-    "manicure",
-    "nail-repair",
-    "french-tips",
-    "chrome",
-    "3d-nail-art",
-    "character-art",
-  ]);
+  // Keep these confirmed prices and descriptions consistent when live data loads.
+  const SERVICE_PRICE_OVERRIDES = {
+    "gel-polish": 3000,
+    "gel-x": 15000,
+    manicure: 10000,
+    "nail-repair": 10000,
+    "french-tips": 18000,
+    chrome: 2000,
+    "3d-nail-art": 3000,
+    "character-art": 3000,
+  };
+  const SERVICE_DESCRIPTION_OVERRIDES = {
+    "gel-polish": "Long-wearing, high-shine gel polish.",
+    "gel-x": "Gel extension system for length without acrylic.",
+    manicure:
+      "A tidy shape-and-polish finish for hands that need to look put together fast.",
+    "nail-repair": "Fix a broken or lifted nail.",
+    "french-tips": "Classic french tip finish.",
+    chrome: "Chrome finish add-on; adds ₦2,000 to a nail service.",
+    "3d-nail-art": "Sculpted, dimensional nail art detail.",
+    "character-art": "Custom hand-painted character design.",
+  };
   const SERVICE_IMAGE_OVERRIDES = {
     "acrylic-full-set": "images/acrylic.jpg",
     "acrylic-refill": "damnail1.jpg",
@@ -54,7 +65,7 @@
     {
       id: "gel-polish",
       name: "Gel Polish",
-      price: null,
+      price: 3000,
       duration: 45,
       image: "images/classic-manicure.jpg",
       description: "Long-wearing, high-shine gel polish.",
@@ -62,7 +73,7 @@
     {
       id: "gel-x",
       name: "Gel X",
-      price: null,
+      price: 15000,
       duration: 60,
       image: "images/gel-manicure.jpg",
       description:
@@ -91,7 +102,7 @@
     {
       id: "manicure",
       name: "Manicure",
-      price: null,
+      price: 10000,
       duration: 45,
       image: "images/nail-art.jpg",
       description:
@@ -100,7 +111,7 @@
     {
       id: "nail-repair",
       name: "Nail Repair",
-      price: null,
+      price: 10000,
       duration: 30,
       image: "87c6e209-fa01-440e-b640-1dbb2353816b.jpg",
       description: "Fix a broken or lifted nail.",
@@ -118,7 +129,7 @@
     {
       id: "french-tips",
       name: "French Tips",
-      price: null,
+      price: 18000,
       duration: 45,
       image: "images/almond red nails.jpg",
       description: "Classic french tip finish.",
@@ -126,15 +137,16 @@
     {
       id: "chrome",
       name: "Chrome",
-      price: null,
+      price: 2000,
       duration: 45,
       image: "images/6a743289-f896-4b31-89c5-e6bf89ea1414.jpg",
-      description: "Mirror-shine chrome finish.",
+      priceExtra: true,
+      description: "Chrome finish add-on; adds ₦2,000 to a nail service.",
     },
     {
       id: "3d-nail-art",
       name: "3D Nail Art",
-      price: null,
+      price: 3000,
       duration: 45,
       image: "images/4b30351b-3f40-49d8-8db4-0d504a9c740d.jpg",
       description: "Sculpted, dimensional nail art detail.",
@@ -142,7 +154,7 @@
     {
       id: "character-art",
       name: "Character Art",
-      price: null,
+      price: 3000,
       duration: 60,
       image: "images/3be56728-333c-441c-842c-8994c49f67c9.jpg",
       description: "Custom hand-painted character design.",
@@ -257,11 +269,16 @@
         SERVICES.push({
           id: r.id,
           name: r.name,
-          price: UNPRICED_SERVICE_IDS.has(r.id) ? null : r.price,
-          priceSuffix: r.price_suffix || undefined,
+          price: SERVICE_PRICE_OVERRIDES[r.id] ?? r.price,
+          priceSuffix:
+            SERVICE_PRICE_OVERRIDES[r.id] != null
+              ? undefined
+              : r.price_suffix || undefined,
+          priceExtra: r.id === "chrome",
           duration: r.duration,
           image: SERVICE_IMAGE_OVERRIDES[r.id] || r.image,
-          description: r.description || "",
+          description:
+            SERVICE_DESCRIPTION_OVERRIDES[r.id] || r.description || "",
         }),
       );
       renderServiceGrid();
@@ -397,6 +414,10 @@
     return `₦${Math.round(n).toLocaleString("en-NG")}`;
   }
 
+  function priceLabel(service, amount = service.price, suffix = service.priceSuffix || "") {
+    return `${money(amount)}${suffix}${service.priceExtra ? " extra" : ""}`;
+  }
+
   function discountedPrice(price) {
     if (price == null) return null;
     return offerClaimed ? Math.round(price * 0.9) : price;
@@ -420,7 +441,7 @@
         <div class="service-body">
           <div class="service-title-row">
             <span class="name">${s.name}</span>
-            ${s.price == null ? "" : `<span class="price">${money(s.price)}${s.priceSuffix || ""}</span>`}
+            ${s.price == null ? "" : `<span class="price">${priceLabel(s)}</span>`}
           </div>
           <div class="service-meta">🕐 ${s.duration} min</div>
         </div>
@@ -544,9 +565,9 @@
       thumb.textContent = "";
       const price = discountedPrice(svc.price);
       $("#summaryName").textContent = svc.name;
-      $("#summaryPrice").textContent = price == null ? "Price confirmed at salon" : `${money(price)}${svc.priceSuffix || ""}`;
+      $("#summaryPrice").textContent = price == null ? "Price confirmed at salon" : priceLabel(svc, price);
       $("#summaryDur").textContent = `🕐 ${svc.duration} min`;
-      $("#summaryTotal").textContent = price == null ? "To be confirmed" : `${money(price)}${svc.priceSuffix || ""}`;
+      $("#summaryTotal").textContent = price == null ? "To be confirmed" : priceLabel(svc, price);
       $("#summaryDiscountRow").hidden = !offerClaimed || price == null;
     } else {
       thumb.style.backgroundImage = "";
@@ -769,7 +790,7 @@
     thumb.style.background = `url(${svc.image}) center/cover no-repeat`;
     const suffix = svc.priceSuffix && !booking.discountApplied ? svc.priceSuffix : "";
     $("#confirmName").textContent =
-      `${booking.serviceName} — ${booking.total == null ? "price to be confirmed" : `${money(booking.total)}${suffix}`}` +
+      `${booking.serviceName} — ${booking.total == null ? "price to be confirmed" : priceLabel(svc, booking.total, suffix)}` +
       (booking.discountApplied ? " (10% new client discount applied)" : "");
     $("#confirmDate").textContent = booking.dateDisplay;
     $("#confirmTime").textContent = booking.time;
@@ -869,7 +890,7 @@
             <span>📅 ${b.dateDisplay}</span>
             <span>🕐 ${b.time}</span>
             <span>👤 ${b.artistName || "Any Available"}</span>
-            <span>${money(b.total)}</span>
+            <span>${b.total == null ? "Price to be confirmed" : svc ? priceLabel(svc, b.total) : money(b.total)}</span>
           </div>
         </div>
         <span class="appt-status ${b.status}">${b.status}</span>
@@ -903,7 +924,7 @@
       <div class="catalog-card">
         <img src="${s.image}" alt="${s.name}">
         <div class="catalog-body">
-          <div class="row"><span class="name">${s.name}</span>${s.price == null ? "" : `<span class="price">${money(s.price)}${s.priceSuffix || ""}</span>`}</div>
+          <div class="row"><span class="name">${s.name}</span>${s.price == null ? "" : `<span class="price">${priceLabel(s)}</span>`}</div>
           <div class="desc">${s.description}</div>
           <div class="meta">🕐 ${s.duration} min</div>
           <button class="btn btn-outline btn-small book-this" data-id="${s.id}">Book This</button>
