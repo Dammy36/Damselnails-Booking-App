@@ -4,9 +4,32 @@
   /* =========================================================
      DATA — services
   ========================================================= */
-  // Prices marked "placeholder" were not in the salon's price list yet and
-  // default to a flat ₦20,000+ starting point — update once real pricing
-  // is confirmed.
+  // These services remain bookable while their prices are confirmed by the salon.
+  const UNPRICED_SERVICE_IDS = new Set([
+    "gel-polish",
+    "gel-x",
+    "manicure",
+    "nail-repair",
+    "french-tips",
+    "chrome",
+    "3d-nail-art",
+    "character-art",
+  ]);
+  const SERVICE_IMAGE_OVERRIDES = {
+    "acrylic-full-set": "images/acrylic.jpg",
+    "acrylic-refill": "damnail1.jpg",
+    "gel-polish": "images/classic-manicure.jpg",
+    "gel-x": "images/gel-manicure.jpg",
+    biab: "images/amod pink nails.jpg",
+    pedicure: "images/pedicure.jpg",
+    manicure: "images/nail-art.jpg",
+    "nail-repair": "87c6e209-fa01-440e-b640-1dbb2353816b.jpg",
+    "nail-removal": "fc7e7b7c-6241-49bf-81ff-82d474a4d96b.jpg",
+    "french-tips": "images/almond red nails.jpg",
+    chrome: "images/6a743289-f896-4b31-89c5-e6bf89ea1414.jpg",
+    "3d-nail-art": "images/4b30351b-3f40-49d8-8db4-0d504a9c740d.jpg",
+    "character-art": "images/3be56728-333c-441c-842c-8994c49f67c9.jpg",
+  };
   const SERVICES = [
     {
       id: "acrylic-full-set",
@@ -24,26 +47,26 @@
       price: 15000,
       priceSuffix: "+",
       duration: 60,
-      image: "images/acrylic.jpg",
+      image: "damnail1.jpg",
       description:
         "Refill for acrylic nails 2-3 weeks old. Price varies by length, from ₦15k short up to ₦40k XL/XXL.",
     },
     {
       id: "gel-polish",
       name: "Gel Polish",
-      price: 20000,
+      price: null,
       duration: 45,
-      image: "images/gel-manicure.jpg",
-      description: "Long-wearing, high-shine gel polish. (placeholder price)",
+      image: "images/classic-manicure.jpg",
+      description: "Long-wearing, high-shine gel polish.",
     },
     {
       id: "gel-x",
       name: "Gel X",
-      price: 25000,
+      price: null,
       duration: 60,
       image: "images/gel-manicure.jpg",
       description:
-        "Gel extension system for length without acrylic. (placeholder price)",
+        "Gel extension system for length without acrylic.",
     },
     {
       id: "biab",
@@ -51,7 +74,7 @@
       price: 10000,
       priceSuffix: "+",
       duration: 60,
-      image: "images/gel-manicure.jpg",
+      image: "images/amod pink nails.jpg",
       description:
         "Builder-in-a-bottle strengthening overlay. ₦10k polish, ₦15k nail extension. +₦5k for cat-eye effect.",
     },
@@ -68,19 +91,19 @@
     {
       id: "manicure",
       name: "Manicure",
-      price: 20000,
+      price: null,
       duration: 45,
-      image: "images/classic-manicure.jpg",
+      image: "images/nail-art.jpg",
       description:
-        "A tidy shape-and-polish finish for hands that need to look put together fast. (placeholder price)",
+        "A tidy shape-and-polish finish for hands that need to look put together fast.",
     },
     {
       id: "nail-repair",
       name: "Nail Repair",
-      price: 20000,
+      price: null,
       duration: 30,
-      image: "images/classic-manicure.jpg",
-      description: "Fix a broken or lifted nail. (placeholder price)",
+      image: "87c6e209-fa01-440e-b640-1dbb2353816b.jpg",
+      description: "Fix a broken or lifted nail.",
     },
     {
       id: "nail-removal",
@@ -88,41 +111,41 @@
       price: 5000,
       priceSuffix: "+",
       duration: 20,
-      image: "images/classic-manicure.jpg",
+      image: "fc7e7b7c-6241-49bf-81ff-82d474a4d96b.jpg",
       description:
         "₦5k for nails done in-studio, ₦7k for nails done elsewhere.",
     },
     {
       id: "french-tips",
       name: "French Tips",
-      price: 20000,
+      price: null,
       duration: 45,
-      image: "images/nail-art.jpg",
-      description: "Classic french tip finish. (placeholder price)",
+      image: "images/almond red nails.jpg",
+      description: "Classic french tip finish.",
     },
     {
       id: "chrome",
       name: "Chrome",
-      price: 20000,
+      price: null,
       duration: 45,
-      image: "images/nail-art.jpg",
-      description: "Mirror-shine chrome finish. (placeholder price)",
+      image: "images/6a743289-f896-4b31-89c5-e6bf89ea1414.jpg",
+      description: "Mirror-shine chrome finish.",
     },
     {
       id: "3d-nail-art",
       name: "3D Nail Art",
-      price: 25000,
+      price: null,
       duration: 45,
-      image: "images/nail-art.jpg",
-      description: "Sculpted, dimensional nail art detail. (placeholder price)",
+      image: "images/4b30351b-3f40-49d8-8db4-0d504a9c740d.jpg",
+      description: "Sculpted, dimensional nail art detail.",
     },
     {
       id: "character-art",
       name: "Character Art",
-      price: 30000,
+      price: null,
       duration: 60,
-      image: "images/nail-art.jpg",
-      description: "Custom hand-painted character design. (placeholder price)",
+      image: "images/3be56728-333c-441c-842c-8994c49f67c9.jpg",
+      description: "Custom hand-painted character design.",
     },
   ];
 
@@ -153,37 +176,6 @@
     },
   ];
 
-  const REVIEWS = [
-    {
-      name: "Ngozi A.",
-      rating: 5,
-      quote:
-        "My acrylics have never lasted this long without lifting. Booking online took two minutes.",
-      service: "Acrylic Full Set",
-    },
-    {
-      name: "Bisola K.",
-      rating: 5,
-      quote:
-        "The gel manicure was flawless and the studio itself is so calming.",
-      service: "Gel Manicure",
-    },
-    {
-      name: "Funmi O.",
-      rating: 4,
-      quote:
-        "Loved the nail art detail — exactly what I showed in my reference photo.",
-      service: "Nail Art Design",
-    },
-    {
-      name: "Zainab M.",
-      rating: 5,
-      quote:
-        "The spa package is worth every minute. I left feeling completely reset.",
-      service: "Damsel Spa Package",
-    },
-  ];
-
   const GALLERY_IMAGES = [
     "images/3be56728-333c-441c-842c-8994c49f67c9.jpg",
     "images/4b30351b-3f40-49d8-8db4-0d504a9c740d.jpg",
@@ -192,7 +184,7 @@
     "images/amod pink nails.jpg",
     "images/nail-art.jpg",
     "images/acrylic.jpg",
-    "images/spa-image.jpg",
+    "images/classic-manicure.jpg",
   ];
 
   // Live gallery photos come from this public Supabase Storage bucket —
@@ -235,7 +227,7 @@
     }
   }
 
-  // Services/artists/reviews render from the hardcoded arrays above
+  // Services and artists render from the hardcoded arrays above
   // immediately (so the page is never empty), then this quietly swaps in
   // live data from Supabase if it's reachable — same fallback pattern as
   // the gallery. Editing content in admin.html updates these tables.
@@ -254,10 +246,9 @@
   }
 
   async function refreshLiveContent() {
-    const [svcRows, artRows, revRows] = await Promise.all([
+    const [svcRows, artRows] = await Promise.all([
       fetchSupabaseTable("services", "sort_order.asc"),
       fetchSupabaseTable("artists", "sort_order.asc"),
-      fetchSupabaseTable("reviews", "sort_order.asc"),
     ]);
 
     if (svcRows && svcRows.length) {
@@ -266,10 +257,10 @@
         SERVICES.push({
           id: r.id,
           name: r.name,
-          price: r.price,
+          price: UNPRICED_SERVICE_IDS.has(r.id) ? null : r.price,
           priceSuffix: r.price_suffix || undefined,
           duration: r.duration,
-          image: r.image,
+          image: SERVICE_IMAGE_OVERRIDES[r.id] || r.image,
           description: r.description || "",
         }),
       );
@@ -292,18 +283,6 @@
       if ($("#artistsGrid")) renderArtists();
     }
 
-    if (revRows && revRows.length) {
-      REVIEWS.length = 0;
-      revRows.forEach((r) =>
-        REVIEWS.push({
-          name: r.name,
-          rating: r.rating,
-          quote: r.quote,
-          service: r.service || "",
-        }),
-      );
-      if ($("#reviewsList")) renderReviews();
-    }
   }
 
   const TIMES = [
@@ -336,7 +315,6 @@
     services: "Our Services",
     artists: "Nail Artists",
     gallery: "Gallery",
-    reviews: "Reviews",
     profile: "Profile",
     settings: "Settings",
   };
@@ -420,6 +398,7 @@
   }
 
   function discountedPrice(price) {
+    if (price == null) return null;
     return offerClaimed ? Math.round(price * 0.9) : price;
   }
 
@@ -441,7 +420,7 @@
         <div class="service-body">
           <div class="service-title-row">
             <span class="name">${s.name}</span>
-            <span class="price">${money(s.price)}${s.priceSuffix || ""}</span>
+            ${s.price == null ? "" : `<span class="price">${money(s.price)}${s.priceSuffix || ""}</span>`}
           </div>
           <div class="service-meta">🕐 ${s.duration} min</div>
         </div>
@@ -565,10 +544,10 @@
       thumb.textContent = "";
       const price = discountedPrice(svc.price);
       $("#summaryName").textContent = svc.name;
-      $("#summaryPrice").textContent = `${money(price)}${svc.priceSuffix || ""}`;
+      $("#summaryPrice").textContent = price == null ? "Price confirmed at salon" : `${money(price)}${svc.priceSuffix || ""}`;
       $("#summaryDur").textContent = `🕐 ${svc.duration} min`;
-      $("#summaryTotal").textContent = `${money(price)}${svc.priceSuffix || ""}`;
-      $("#summaryDiscountRow").hidden = !offerClaimed;
+      $("#summaryTotal").textContent = price == null ? "To be confirmed" : `${money(price)}${svc.priceSuffix || ""}`;
+      $("#summaryDiscountRow").hidden = !offerClaimed || price == null;
     } else {
       thumb.style.backgroundImage = "";
       thumb.textContent = "No service selected";
@@ -736,7 +715,7 @@
       serviceName: svc.name,
       basePrice: svc.price,
       total,
-      discountApplied: offerClaimed,
+      discountApplied: offerClaimed && svc.price != null,
       dateISO: state.selectedDate.toISOString(),
       dateDisplay: formatDate(state.selectedDate),
       time: state.selectedTime,
@@ -758,7 +737,7 @@
     };
     saveJSON(LS_KEYS.profile, profile);
 
-    if (offerClaimed) {
+    if (offerClaimed && svc.price != null) {
       offerClaimed = false;
       offerUsed = true;
       saveJSON(LS_KEYS.offerClaimed, offerClaimed);
@@ -790,7 +769,7 @@
     thumb.style.background = `url(${svc.image}) center/cover no-repeat`;
     const suffix = svc.priceSuffix && !booking.discountApplied ? svc.priceSuffix : "";
     $("#confirmName").textContent =
-      `${booking.serviceName} — ${money(booking.total)}${suffix}` +
+      `${booking.serviceName} — ${booking.total == null ? "price to be confirmed" : `${money(booking.total)}${suffix}`}` +
       (booking.discountApplied ? " (10% new client discount applied)" : "");
     $("#confirmDate").textContent = booking.dateDisplay;
     $("#confirmTime").textContent = booking.time;
@@ -837,7 +816,6 @@
     if (view === "services") renderServicesCatalog();
     if (view === "artists") renderArtists();
     if (view === "gallery") renderGallery();
-    if (view === "reviews") renderReviews();
     if (view === "profile") renderProfileView();
     if (view === "settings") renderSettingsView();
 
@@ -925,7 +903,7 @@
       <div class="catalog-card">
         <img src="${s.image}" alt="${s.name}">
         <div class="catalog-body">
-          <div class="row"><span class="name">${s.name}</span><span class="price">${money(s.price)}${s.priceSuffix || ""}</span></div>
+          <div class="row"><span class="name">${s.name}</span>${s.price == null ? "" : `<span class="price">${money(s.price)}${s.priceSuffix || ""}</span>`}</div>
           <div class="desc">${s.description}</div>
           <div class="meta">🕐 ${s.duration} min</div>
           <button class="btn btn-outline btn-small book-this" data-id="${s.id}">Book This</button>
@@ -1000,23 +978,6 @@
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeLightbox();
   });
-
-  /* =========================================================
-     REVIEWS
-  ========================================================= */
-  function renderReviews() {
-    $("#reviewsList").innerHTML = REVIEWS.map(
-      (r) => `
-      <div class="review-card">
-        <div class="review-top">
-          <span class="review-name">${r.name}</span>
-          <span class="review-stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</span>
-        </div>
-        <div class="review-quote">"${r.quote}"</div>
-        <div class="review-service">${r.service}</div>
-      </div>`,
-    ).join("");
-  }
 
   /* =========================================================
      PROFILE
@@ -1242,7 +1203,7 @@
     }
   }
 
-  $("#aiForm").addEventListener("submit", aiSummary);
+  $("#aiForm")?.addEventListener("submit", aiSummary);
 
   /* =========================================================
      CHAT WIDGET
@@ -1264,18 +1225,18 @@
   const chatInput = $("#chatInput");
   const chatSend = $("#chatSend");
 
-  chatToggle.addEventListener("click", () => {
+  chatToggle?.addEventListener("click", () => {
     const willOpen = chatPanel.hidden;
     chatPanel.hidden = !willOpen;
     chatToggle.setAttribute("aria-expanded", String(willOpen));
     if (willOpen) chatInput.focus();
   });
-  $("#chatClose").addEventListener("click", () => {
+  $("#chatClose")?.addEventListener("click", () => {
     chatPanel.hidden = true;
     chatToggle.setAttribute("aria-expanded", "false");
   });
 
-  $("#chatForm").addEventListener("submit", async (e) => {
+  $("#chatForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const question = chatInput.value.trim();
     if (!question) return;
